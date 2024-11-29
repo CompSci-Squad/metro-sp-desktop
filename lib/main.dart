@@ -1,20 +1,37 @@
 import 'package:flutter/material.dart';
+import 'src/telas/telaCadastrarNovoUsuario.dart';
+import 'src/telas/telaPerfil.dart';
+import 'src/telas/telaVerificarStatusTotemEncontrado.dart';
+import 'src/telas/telaVerificarCadastro.dart';
+import 'src/telas/telaVerificarStatusTotem.dart';
+import 'src/telas/telaReportarFalhaTotem.dart';
+import 'src/telas/telaDesbloquearTotem.dart';
+import 'src/telas/telaLogin.dart';
+import 'src/telas/telaInicial.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'src/app.dart';
-import 'src/settings/settings_controller.dart';
-import 'src/settings/settings_service.dart';
 
-void main() async {
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+void main() {
+  runApp(MyApp());
+}
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
-  await settingsController.loadSettings();
-
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      initialRoute: '/', // Define a tela de login como inicial
+      routes: {
+        '/': (context) => LoginPage(),
+        '/telaInicial': (context) => telaInicial(),
+        '/telaVerificarCadastro': (context) => telaVerificarCadastro(),
+        '/telaVerificarStatusTotem': (context) => telaVerificarStatusTotem(),
+        '/telaVerificarStatusTotemEncontrado': (context) => telaVerificarStatusTotemEncontrado(),
+        '/telaReportarFalhaTotem' : (context) => telaReportarFalhaTotem(),
+        '/telaDesbloquearTotem': (context) => telaDesbloquearTotem(),
+        '/telaPerfil': (context) => telaPerfil(),
+        '/telaCadastrarNovoUsuario': (context) => telaCadastrarNovoUsuario(),
+        // Adicione mais rotas aqui conforme criar novas telas
+      },
+    );
+  }
 }

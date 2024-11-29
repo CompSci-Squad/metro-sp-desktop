@@ -12,8 +12,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
+    
+  cupertino_icons: ^1.0.6
+  email_validator: ^3.0.0
+  flutter_dotenv: ^5.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -25,8 +28,10 @@ flutter:
   uses-material-design: true
 
   # Enable generation of localized Strings from arb files.
-  generate: true
+
 
   assets:
     # Add assets from the images directory to the application.
-    - assets/images/
+    - assets/barraMetro.png
+    - assets/linhasMetro.png
+    - .env
