@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:metro_sp_desktop/src/telas/telaLog.dart';
 import 'src/telas/telaCadastrarNovoUsuario.dart';
 import 'src/telas/telaPerfil.dart';
 
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/', // Define a tela de login como inicial
       routes: {
         '/': (context) => LoginPage(),
-        '/telaInicial': (context) => telaInicial(),
-        '/telaVerificarCadastro': (context) => telaVerificarCadastro(),
-        '/telaPerfil': (context) => telaPerfil(),
-        '/telaCadastrarNovoUsuario': (context) => telaCadastrarNovoUsuario(),
+        '/telaInicial': (context) => TelaInicial(),
+        '/telaVerificarCadastro': (context) => TelaVerificarCadastro(),
+        '/telaPerfil': (context) => TelaPerfil(),
+        '/telaCadastrarNovoUsuario': (context) => TelaCadastrarNovoUsuario(),
+        '/telaLog': (context) => TelaLog(),
         // Adicione mais rotas aqui conforme criar novas telas
       },
     );

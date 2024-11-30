@@ -1,38 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart'; // Import necessário para abrir URLs
 
-class telaInicial extends StatelessWidget {
+class TelaInicial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: buildAppDrawer(context),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Barra superior com a imagem, como na tela de login
-          Container(
-  width: double.infinity, // Ocupa toda a largura da tela
-  height: 28, // Define a altura para 28
-  child: Image.asset(
-    'assets/barraMetro.png', // Caminho da imagem
-    fit: BoxFit.cover, // A imagem cobre a largura total
-  ),
-),
+          // Cabeçalho (Barra Superior + Saudações)
+          _buildHeader(context),
+          // Conteúdo principal centralizado verticalmente
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildGreetingSection(context),
-                  _buildThickerDivider(),
-                  _buildMapTitle(),
-                  _buildThickerDivider(),
-                  _buildMapSection(),
-                  _buildOperationsText(),
-                  _buildThickerDivider(),
-                  _buildOperationButtons(context),
-                ],
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildCentralContent(context), // Contexto passado aqui
               ),
             ),
           ),
@@ -41,170 +24,161 @@ class telaInicial extends StatelessWidget {
     );
   }
 
-Drawer buildAppDrawer(BuildContext context) {
-  return Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: <Widget>[
-        const DrawerHeader(
+  // Cabeçalho que inclui a barra superior e as saudações
+  Widget _buildHeader(BuildContext context) {
+    return Column(
+      children: [
+        // Barra superior
+        Container(
+          width: double.infinity,
+          height: 80,
           decoration: BoxDecoration(
-            color: Color.fromRGBO(0, 20, 137, 1),
-          ),
-          child: Text(
-            'Menu',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
+            image: DecorationImage(
+              image: AssetImage('assets/barraMetro.png'),
+              fit: BoxFit.cover,
             ),
           ),
         ),
-        _buildDrawerItem('Cadastrar Novo Usuário', () {
-          Navigator.pushNamed(context, '/telaCadastrarNovoUsuario');
-        }),
-        _buildDrawerItem('Verificar Cadastro Usuário', () {
-          Navigator.pushNamed(context, '/telaVerificarCadastro');
-        }),
-      ],
-    ),
-  );
-}
-
-
-  ListTile _buildDrawerItem(String title, VoidCallback onTap, {Color? textColor}) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(color: textColor ?? Colors.black),
-      ),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildGreetingSection(BuildContext context) {
-  return Stack(
-    children: [
-      // ListTile que leva a uma nova página ao clicar em qualquer área fora das 3 barrinhas
-      Padding(
-        padding: const EdgeInsets.only(left: 80.0), // Aumenta o espaçamento para a direita do ícone
-        child: ListTile(
-          title: const Text(
-            'Olá, Nome',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          subtitle: const Text(
-            'Verifique suas informações aqui',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-          ),
-          onTap: () {
-            
-            Navigator.pushNamed(context, '/telaPerfil'); 
-          },
-        ),
-      ),
-
-      // Ícone das três barrinhas que abre o Drawer, posicionado sobre o ListTile
-      Positioned(
-        left: 0, // Ícone alinhado bem ao canto esquerdo
-        top: 8, // Ajuste para alinhar verticalmente
-        child: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(
-              Icons.menu,
-              size: 43, // Tamanho do ícone
-              color: Colors.black,
+        // Saudações
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: ListTile(
+            title: const Text(
+              'Olá, Nome',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            onPressed: () {
-              Scaffold.of(context).openDrawer(); // Abre o Drawer ao clicar nas três barrinhas
+            subtitle: const Text(
+              'Verifique suas informações aqui',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            onTap: () {
+              Navigator.pushNamed(context, '/telaPerfil');
             },
           ),
         ),
-      ),
-    ],
-  );
-}
-
-
-
-
-
-
-  Widget _buildMapTitle() {
-    return const Center(
-      child: Text(
-        'Acesse O Mapa Completo Das Vias',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
-
-  Widget _buildMapSection() {
-  return Center(
-    child: Container(
-      width: 265, // Largura da imagem do mapa
-      height: 197, // Altura da imagem do mapa
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/linhasMetro.png'), // Caminho para a imagem do mapa
-          fit: BoxFit.contain, // Mantém a proporção da imagem
+        const Divider(
+          color: Colors.grey,
+          thickness: 2,
         ),
-      ),
-    ),
-  );
-}
-
-  Widget _buildOperationsText() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Center(
-        child: Text(
-          'Principais Operações',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ),
+      ],
     );
   }
 
-  Widget _buildThickerDivider() {
-    return const Divider(
-      color: Colors.grey,
-      thickness: 2,
-    );
-  }
-
-  Widget _buildOperationButtons(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 20.0), // Espaço extra ao redor dos botões
-    child: Center(
-      child: Column(
+  // Conteúdo Centralizado Verticalmente
+  Widget _buildCentralContent(BuildContext context) {
+    return Container(
+      width: 800, // Define a largura máxima do conteúdo centralizado
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          buildStyledButton('Cadastrar Novo Usuário', () {
-            Navigator.pushNamed(context, '/telaCadastrarNovoUsuario');
-          }),
-          const SizedBox(height: 20), // Espaço entre os botões
-          buildStyledButton('Verificar Cadastro Usuário', () {
-            Navigator.pushNamed(context, '/telaVerificarCadastro');
-          }),
+          // Mapa das vias
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Acesse O Mapa Completo Das Vias',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Fonte igual à do botão
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
+                    _openLink(
+                      'https://www.metro.sp.gov.br/sua-viagem/linhas-estacoes/',
+                    );
+                  },
+                  child: Container(
+                    width: 400, // Largura maior da imagem
+                    height: 300, // Altura maior da imagem
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/linhasMetro.png'),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 32), // Espaço entre o mapa e os botões
+          // Operações principais
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Principais Operações',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Fonte igual à do botão
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                // Botão Cadastrar Novo Usuário
+                buildStyledButton(
+                  context,
+                  'Cadastrar Novo Passageiro',
+                  () {
+                    Navigator.pushNamed(context, '/telaCadastrarNovoUsuario');
+                  },
+                ),
+                const SizedBox(height: 20), // Espaço entre os botões
+                // Botão Verificar Registros
+                buildStyledButton(
+                  context,
+                  'Verificar Registros',
+                  () {
+                    Navigator.pushNamed(context, '/telaLog');
+                  },
+                ),
+                const SizedBox(height: 20), // Espaço entre os botões
+                // Botão Verificar Passageiro
+                buildStyledButton(
+                  context,
+                  'Verificar Passageiro',
+                  () {
+                    Navigator.pushNamed(context, '/telaVerificarCadastro');
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
-    ),
-  );
-}
+    );
+  }
 
-ElevatedButton buildStyledButton(String text, VoidCallback onPressed) {
-  return ElevatedButton(
-    onPressed: onPressed,
-    style: ElevatedButton.styleFrom(
-      backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
-      padding: const EdgeInsets.symmetric(vertical: 15), // Ajusta a altura do conteúdo do botão
-      minimumSize: const Size(206, 56), // Define o tamanho do botão como 206x56
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
+  // Função para abrir o link no navegador
+  void _openLink(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url); // Abre o link
+    } else {
+      throw 'Não foi possível abrir o link: $url';
+    }
+  }
+
+  // Botões estilizados
+  ElevatedButton buildStyledButton(
+    BuildContext context, // Adicionado aqui
+    String text,
+    VoidCallback onPressed,
+  ) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
+        padding: const EdgeInsets.symmetric(vertical: 20), // Altura maior
+        minimumSize: const Size(250, 60), // Largura e altura maiores
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
       ),
-    ),
-    child: Text(
-      text,
-      style: const TextStyle(color: Colors.white, fontSize: 16),
-    ),
-  );
-}
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white, fontSize: 18), // Texto maior
+      ),
+    );
+  }
 }

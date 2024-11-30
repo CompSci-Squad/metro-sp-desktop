@@ -1,35 +1,20 @@
 import 'package:flutter/material.dart';
 
-class telaVerificarCadastro extends StatelessWidget {
+class TelaVerificarCadastro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: buildAppDrawer(context),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Barra superior com a imagem, como na tela de login
-          Container(
-            width: double.infinity, // Ocupa toda a largura da tela
-            height: 28, // Define a altura para 28
-            child: Image.asset(
-              'assets/barraMetro.png', // Caminho da imagem
-              fit: BoxFit.cover, // A imagem cobre a largura total
-            ),
-          ),
+          // Cabeçalho (Barra Superior + Título)
+          _buildHeader(),
+          // Conteúdo principal centralizado verticalmente
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildGreetingSection(context),
-                  _buildThickerDivider(),
-                  _buildOperationButtons(),
-                  Spacer(),
-                  _buildBackButton(context),
-                ],
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _buildCentralContent(context),
               ),
             ),
           ),
@@ -38,150 +23,94 @@ class telaVerificarCadastro extends StatelessWidget {
     );
   }
 
-  Drawer buildAppDrawer(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color.fromRGBO(0, 20, 137, 1),
-            ),
-            child: Text(
-              'Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          _buildDrawerItem('Cadastrar Novo Usuário', () {
-            Navigator.pushReplacementNamed(context, '/telaCadastrarNovoUsuario');
-          }),
-          _buildDrawerItem('Verificar Cadastro Usuário', () {
-            Navigator.pushReplacementNamed(context, '/telaVerificarCadastro');
-          }),
-        ],
-      ),
-    );
-  }
-
-  ListTile _buildDrawerItem(String title, VoidCallback onTap, {Color? textColor}) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(color: textColor ?? Colors.black),
-      ),
-      onTap: onTap,
-    );
-  }
-
-  Widget _buildGreetingSection(BuildContext context) {
-    return Stack(
+  // Cabeçalho que inclui a barra superior e o título
+  Widget _buildHeader() {
+    return Column(
       children: [
+        // Barra superior
+        Container(
+          width: double.infinity,
+          height: 80,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/barraMetro.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        // Título da página
         Padding(
-          padding: const EdgeInsets.only(left: 80.0, top: 8.0, bottom: 8.0), // Ajusta o espaçamento ao redor do ListTile
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
-            contentPadding: EdgeInsets.zero, // Remove o padding interno do ListTile
             title: const Text(
-              'Verificar Cadastro Usuário',
+              'Verificar Passageiro',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
         ),
-        Positioned(
-          left: 0, // Ícone alinhado bem ao canto esquerdo
-          top: 8, // Alinhamento vertical com o ListTile
-          child: Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(
-                Icons.menu,
-                size: 43, // Tamanho do ícone
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Scaffold.of(context).openDrawer(); // Abre o Drawer ao clicar nas três barrinhas
-              },
-            ),
-          ),
+        const Divider(
+          color: Colors.grey,
+          thickness: 2,
         ),
       ],
     );
   }
 
-  Widget _buildThickerDivider() {
-    return const Divider(
-      color: Colors.grey,
-      thickness: 2,
-    );
-  }
-
-  Widget _buildOperationButtons() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0), // Espaço extra ao redor dos botões
-      child: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+  // Conteúdo centralizado
+  Widget _buildCentralContent(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Campo de CPF
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Digite o C.P.F. Do Usuário',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 10),
-            TextField(
-              obscureText: false,
-              decoration: InputDecoration(
-                hintText: '***.***.***-**',
-                filled: true,
-                fillColor: Color.fromRGBO(0, 20, 137, 1),
-                hintStyle: TextStyle(color: Colors.white),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: SizedBox(
-                width: 200, // Ajuste a largura conforme necessário
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Navegar para a próxima tela
-                    //Navigator.pushNamed(context, '');
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
-                    padding: EdgeInsets.symmetric(vertical: 20), // Aumenta a altura do botão
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                  child: Text(
-                    'Verificar',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: 400, // Define a largura máxima do campo
+              child: TextField(
+                obscureText: false,
+                decoration: InputDecoration(
+                  hintText: '***.***.***-**',
+                  filled: true,
+                  fillColor: const Color.fromRGBO(0, 20, 137, 1),
+                  hintStyle: const TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
                   ),
                 ),
+                style: const TextStyle(color: Colors.white),
+                keyboardType: TextInputType.number,
               ),
-            )
+            ),
           ],
         ),
-      ),
-    );
-  }
-
-
-
-  Widget _buildBackButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomLeft,
-      child: IconButton(
-        icon: Icon(Icons.arrow_back, size: 30),
-        onPressed: () {
-          Navigator.pop(context); // Retorna à tela anterior
-        },
-      ),
+        const SizedBox(height: 20), // Espaço entre o campo e o botão
+        // Botão Verificar
+        SizedBox(
+          width: 250,
+          child: ElevatedButton(
+            onPressed: () {
+              // Ação do botão Verificar
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            child: const Text(
+              'Verificar',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

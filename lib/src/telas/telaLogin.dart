@@ -55,51 +55,55 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBarraSuperior(),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Acesse',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Column(
+        children: [
+          _buildBarraSuperior(),
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  width: MediaQuery.of(context).size.width > 800 ? 600 : double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Acesse',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const Text(
+                        'com e-mail e senha para entrar',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                      const SizedBox(height: 20),
+                      _buildEmailField(),
+                      const SizedBox(height: 20),
+                      _buildPasswordField(),
+                      const SizedBox(height: 20),
+                      _buildCheckboxESenha(context),
+                      const SizedBox(height: 20),
+                      _submitButton(),
+                    ],
                   ),
-                  const Text(
-                    'com e-mail e senha para entrar',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildEmailField(),
-                  const SizedBox(height: 20),
-                  _buildPasswordField(),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: 20),
-            _buildCheckboxESenha(context),
-            const SizedBox(height: 20),
-            _submitButton(),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  // Barra superior
+  // Barra superior preenchendo toda a largura
   Widget _buildBarraSuperior() {
     return Container(
       width: double.infinity,
-      height: 28,
-      child: Image.asset(
-        'assets/barraMetro.png',
-        fit: BoxFit.cover,
+      height: 80, // Altura da barra superior
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/barraMetro.png'),
+          fit: BoxFit.cover, // Preenche todo o container
+        ),
       ),
     );
   }
@@ -165,33 +169,30 @@ class _LoginPageState extends State<LoginPage> {
 
   // Checkbox e "Esqueci minha senha"
   Widget _buildCheckboxESenha(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Checkbox(
-                value: _rememberMe,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value!;
-                  });
-                },
-              ),
-              const Text('Lembrar minha senha'),
-            ],
-          ),
-          TextButton(
-            onPressed: _showForgotPasswordDialog,
-            child: const Text(
-              'Esqueci minha senha',
-              style: TextStyle(color: Colors.red),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+              value: _rememberMe,
+              onChanged: (value) {
+                setState(() {
+                  _rememberMe = value!;
+                });
+              },
             ),
+            const Text('Lembrar minha senha'),
+          ],
+        ),
+        TextButton(
+          onPressed: _showForgotPasswordDialog,
+          child: const Text(
+            'Esqueci minha senha',
+            style: TextStyle(color: Colors.red),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
