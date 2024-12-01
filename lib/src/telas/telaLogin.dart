@@ -1,15 +1,117 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../services/api_service.dart';
+import './globalVariables.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageDesktopState createState() => _LoginPageDesktopState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageDesktopState extends State<LoginPage> {
   bool _rememberMe = false;
   bool _obscurePassword = true;
 
-  // Função para exibir o diálogo de "Esqueci minha senha"
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool _isInputValid(String email, String password) {
+    return email.isNotEmpty && password.isNotEmpty;
+  }
+
+  Future<void> _submitLogin() async {
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    if (!_isInputValid(email, password)) {
+      _showDialog('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    _showLoading(true);
+
+    try {
+      final postResponse = await apiService.post('/login', {
+        'email': email,
+        'password': password,
+      });
+
+      if (_isLoginSuccessful(postResponse)) {
+        await _handleSuccessfulLogin(postResponse["accessToken"], email);
+      } else {
+        _showDialog('E-mail ou senha incorreto. Por favor, tente novamente.');
+      }
+    } catch (e) {
+      print(e);
+      _showDialog(
+        'Erro ao realizar o login. Verifique sua conexão ou tente novamente.',
+        backgroundColor: Colors.red,
+      );
+    } finally {
+      _showLoading(false);
+    }
+  }
+
+  bool _isLoginSuccessful(Map<String, dynamic> response) {
+    return response.containsKey("accessToken");
+  }
+
+  Future<void> _handleSuccessfulLogin(String token, String email) async {
+    apiService.setAuthToken(token);
+    final user = await apiService.get('/user/$email');
+    Provider.of<GlobalVariables>(context, listen: false).setUser(user);
+    Navigator.pushReplacementNamed(context, '/telaInicial');
+  }
+
+  void _showLoading(bool isLoading) {
+    setState(() {
+      // Use this to show/hide a loading indicator
+    });
+  }
+
+  void _showDialog(String message,
+      {Color backgroundColor = const Color.fromRGBO(0, 20, 137, 1)}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: backgroundColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                message,
+                style: const TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                ),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Color.fromRGBO(0, 20, 137, 1)),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _showForgotPasswordDialog() {
     showDialog(
       context: context,
@@ -37,7 +139,8 @@ class _LoginPageState extends State<LoginPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 ),
                 child: const Text(
                   'OK',
@@ -94,21 +197,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Barra superior preenchendo toda a largura
   Widget _buildBarraSuperior() {
     return Container(
       width: double.infinity,
-      height: 80, // Altura da barra superior
+      height: 80,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/barraMetro.png'),
-          fit: BoxFit.cover, // Preenche todo o container
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  // Campo de e-mail
   Widget _buildEmailField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
         const Text('E-mail', style: TextStyle(fontSize: 16)),
         const SizedBox(height: 5),
         TextField(
+          controller: _emailController,
           decoration: InputDecoration(
             hintText: 'Digite seu e-mail @metro',
             filled: true,
@@ -132,7 +234,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Campo de senha
   Widget _buildPasswordField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
         const Text('Digite sua senha', style: TextStyle(fontSize: 16)),
         const SizedBox(height: 5),
         TextField(
+          controller: _passwordController,
           obscureText: _obscurePassword,
           decoration: InputDecoration(
             hintText: 'Digite sua senha',
@@ -167,7 +269,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Checkbox e "Esqueci minha senha"
   Widget _buildCheckboxESenha(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -196,15 +297,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // Botão de login
   Widget _submitButton() {
     return Center(
       child: SizedBox(
         width: 200,
         child: ElevatedButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/telaInicial');
-          },
+          onPressed: _submitLogin,
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
             padding: const EdgeInsets.symmetric(vertical: 20),

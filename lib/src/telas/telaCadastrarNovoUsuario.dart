@@ -1,8 +1,95 @@
 import 'package:flutter/material.dart';
+import '../../services/api_service.dart';
 
-class TelaCadastrarNovoUsuario extends StatelessWidget {
+class TelaCadastrarNovoUsuario extends StatefulWidget {
+  @override
+  _TelaCadastrarNovoUsuarioState createState() =>
+      _TelaCadastrarNovoUsuarioState();
+}
+
+class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
   final List<String> reasons = ["Idade", "P.C.D.", "Desempregado", "Policial"];
   String? selectedReason;
+
+  final TextEditingController _cpfController = TextEditingController();
+  final TextEditingController _nomeController = TextEditingController();
+  final TextEditingController _sobrenomeController = TextEditingController();
+  final TextEditingController _descricaoController = TextEditingController();
+
+  Future<void> _submitUser() async {
+    final String cpf = _cpfController.text;
+    final String nome = _nomeController.text;
+    final String sobrenome = _sobrenomeController.text;
+    final String descricao = _descricaoController.text;
+
+    if (cpf.isEmpty || nome.isEmpty || sobrenome.isEmpty || descricao.isEmpty) {
+      _showErrorDialog();
+      return;
+    }
+
+    print('CPF: $cpf');
+    print('Nome: $nome');
+    print('Sobrenome: $sobrenome');
+    print('Descrição: $descricao');
+
+    final postResponse = await apiService.post('/login', {
+      'CPF': cpf,
+      'Nome': nome,
+      'Sobrenome': sobrenome,
+      'Descrição': descricao,
+    });
+
+    print(postResponse);
+
+    if (!postResponse.containsKey("accessToken")) {
+      _showErrorDialog();
+    } else {
+      // Aqui você pode definir a navegação ou lógica pós-sucesso
+      print("Cadastro realizado com sucesso!");
+    }
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Dados Incompletos',
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                ),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(color: Color.fromRGBO(0, 20, 137, 1)),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +169,8 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
 
   Widget _buildCPFField() {
     return _buildField(
-      label: 'Digite o C.F.P. Do Passageiro',
+      controller: _cpfController,
+      label: 'Digite o C.P.F. Do Passageiro',
       hintText: '***.***.***-**',
       keyboardType: TextInputType.number,
     );
@@ -90,6 +178,7 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
 
   Widget _buildNameField() {
     return _buildField(
+      controller: _nomeController,
       label: 'Digite O Nome do Passageiro',
       hintText: '________',
     );
@@ -97,6 +186,7 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
 
   Widget _buildSurnameField() {
     return _buildField(
+      controller: _sobrenomeController,
       label: 'Digite o Sobrenome Do Passageiro',
       hintText: '________',
     );
@@ -104,6 +194,7 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
 
   Widget _buildRightField() {
     return _buildField(
+      controller: _descricaoController,
       label: 'Digite direitoGratuidade',
       hintText: '',
     );
@@ -113,7 +204,7 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
     return _buildField(
       label: 'Digite o Número do Bilhete Único de Gratuidade (Se o Passageiro Possuir)',
       hintText: '***.***.***-**',
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.number, controller: null,
     );
   }
 
@@ -152,13 +243,19 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
     );
   }
 
-  Widget _buildField({required String label, required String hintText, TextInputType? keyboardType}) {
+  Widget _buildField({
+    required TextEditingController? controller,
+    required String label,
+    required String hintText,
+    TextInputType? keyboardType,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           decoration: InputDecoration(
             hintText: hintText,
             filled: true,
@@ -210,7 +307,7 @@ class TelaCadastrarNovoUsuario extends StatelessWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          // Ação do botão Cadastrar
+          _submitUser();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromRGBO(0, 20, 137, 1),

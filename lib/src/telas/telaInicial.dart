@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Import necessário para o Provider
 import 'package:url_launcher/url_launcher.dart'; // Import necessário para abrir URLs
+
+import './globalVariables.dart'; // Import da classe GlobalVariables
 
 class TelaInicial extends StatelessWidget {
   @override
@@ -26,6 +29,10 @@ class TelaInicial extends StatelessWidget {
 
   // Cabeçalho que inclui a barra superior e as saudações
   Widget _buildHeader(BuildContext context) {
+    final user = Provider.of<GlobalVariables>(context).user;
+    final userName =
+        user != null ? user["name"] ?? "Nome não disponível" : "Nome não disponível";
+
     return Column(
       children: [
         // Barra superior
@@ -43,8 +50,8 @@ class TelaInicial extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ListTile(
-            title: const Text(
-              'Olá, Nome',
+            title: Text(
+              'Olá, $userName',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             subtitle: const Text(
