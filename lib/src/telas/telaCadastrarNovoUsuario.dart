@@ -44,7 +44,6 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
     if (!postResponse.containsKey("accessToken")) {
       _showErrorDialog();
     } else {
-      // Aqui você pode definir a navegação ou lógica pós-sucesso
       print("Cadastro realizado com sucesso!");
     }
   }
@@ -69,7 +68,7 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -97,18 +96,16 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Barra superior ajustada
           _buildTopBar(),
-          // Conteúdo principal com limite de altura
           Expanded(
             child: Center(
               child: Container(
-                width: 600, // Limita a largura do conteúdo
+                width: 600,
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildGreetingSection(context), // Inclui a seta no título
+                    _buildGreetingSection(context),
                     _buildThickerDivider(),
                     _buildCPFField(),
                     _buildNameField(),
@@ -131,7 +128,7 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
   Widget _buildTopBar() {
     return Container(
       width: double.infinity,
-      height: 80, // Altura ajustada para 80px
+      height: 80,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/barraMetro.png'),
@@ -144,16 +141,15 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
   Widget _buildGreetingSection(BuildContext context) {
     return Row(
       children: [
-        // Seta de voltar
         IconButton(
           icon: const Icon(Icons.arrow_back, size: 30, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        const SizedBox(width: 16), // Espaçamento entre a seta e o texto
+        const SizedBox(width: 16),
         const Text(
-          'Cadastro de Novos Passageiros',
+          'Cadastro de Novo Passageiro',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ],
@@ -204,7 +200,8 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
     return _buildField(
       label: 'Digite o Número do Bilhete Único de Gratuidade (Se o Passageiro Possuir)',
       hintText: '***.***.***-**',
-      keyboardType: TextInputType.number, controller: null,
+      keyboardType: TextInputType.number,
+      controller: null,
     );
   }
 
@@ -285,16 +282,12 @@ class _TelaCadastrarNovoUsuarioState extends State<TelaCadastrarNovoUsuario> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: () {
-                // Ação para tirar foto
-              },
+              onPressed: () {},
               icon: const Icon(Icons.camera_alt, size: 40, color: Colors.black),
             ),
             const SizedBox(width: 100),
             IconButton(
-              onPressed: () {
-                // Ação para visualizar foto
-              },
+              onPressed: () {},
               icon: const Icon(Icons.person, size: 40, color: Colors.black),
             ),
           ],

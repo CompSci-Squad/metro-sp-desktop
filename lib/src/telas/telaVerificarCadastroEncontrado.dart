@@ -66,7 +66,7 @@ class TelaVerificarCadastroEncontrado extends StatelessWidget {
         ),
         const SizedBox(width: 16), // Espaçamento entre a seta e o texto
         const Text(
-          'Verificar Cadastro Usuário',
+          'Perfil do Passageiro',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ],

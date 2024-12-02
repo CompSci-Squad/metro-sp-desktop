@@ -1,25 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../services/api_service.dart'; // Certifique-se de que o caminho esteja correto
+import './globalVariables.dart'; // Import da classe GlobalVariables
 
-class TelaLog extends StatelessWidget {
+class TelaLog extends StatefulWidget {
+  @override
+  _TelaLogState createState() => _TelaLogState();
+}
+
+class _TelaLogState extends State<TelaLog> {
+  late Future<List<Map<String, dynamic>>> _logsFuture;
+
+  Future<List<Map<String, dynamic>>> fetchLogs() async {
+  final response = await apiService.get('/logs');
+  
+  // Verifica se a resposta é uma lista de logs
+  if (response is List) {
+    return List<Map<String, dynamic>>.from(response);
+  }
+
+  // Se for um único objeto, encapsula-o em uma lista
+  if (response is Map) {
+    return [Map<String, dynamic>.from(response)];
+  }
+
+  // Caso contrário, lança um erro
+  throw Exception('Formato inesperado na resposta do servidor');
+}
+
+
+  @override
+  void initState() {
+    super.initState();
+    _logsFuture = fetchLogs();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          // Barra superior ajustada
           _buildTopBar(),
-          // Conteúdo principal centralizado verticalmente
           Expanded(
             child: Center(
               child: Container(
-                width: 600, // Limita a largura do conteúdo
+                width: 600,
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildHeaderSection(context),
-                    _buildLogSection(),
+                    FutureBuilder<List<Map<String, dynamic>>>(
+                      future: _logsFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Erro ao carregar logs: ${snapshot.error}'),
+                          );
+                        } else if (snapshot.hasData) {
+                          final logs = snapshot.data!;
+                          Provider.of<GlobalVariables>(context, listen: false).setLogs(logs);
+                          return _buildLogSection(logs);
+                        } else {
+                          return const Center(child: Text('Nenhum log encontrado'));
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -30,11 +79,10 @@ class TelaLog extends StatelessWidget {
     );
   }
 
-  // Barra superior com imagem ajustada
   Widget _buildTopBar() {
     return Container(
       width: double.infinity,
-      height: 80, // Altura ajustada
+      height: 80,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/barraMetro.png'),
@@ -44,38 +92,43 @@ class TelaLog extends StatelessWidget {
     );
   }
 
-  // Cabeçalho com saudação e título
   Widget _buildHeaderSection(BuildContext context) {
     return Row(
       children: [
-        // Seta de voltar
         IconButton(
           icon: const Icon(Icons.arrow_back, size: 30, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // Volta para a tela anterior
+            Navigator.pop(context);
           },
         ),
-        const SizedBox(width: 16), // Espaçamento entre a seta e o texto
+        const SizedBox(width: 16),
         const Text(
-          'Registros de Usuários',
+          'Registros do Sistema',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  // Seção de log com dados fictícios
-  Widget _buildLogSection() {
+  Widget _buildThickerDivider() {
+    return const Divider(
+      color: Colors.grey,
+      thickness: 2,
+    );
+  }
+
+  Widget _buildLogSection(List<Map<String, dynamic>> logs) {
     return Expanded(
       child: ListView.builder(
-        itemCount: 10, // Número de registros fictícios
+        itemCount: logs.length,
         itemBuilder: (context, index) {
+          final log = logs[index];
           return Column(
             children: [
               _buildLogItem(
-                title: 'Registro #${index + 1}',
-                date: '27/11/2024', // Data fictícia para exemplo
-                time: '14:35', // Horário fictício para exemplo
+                title: log["message"] ?? "Sem mensagem",
+                date: log["timestamp"].split('T')[0],
+                time: log["timestamp"].split('T')[1].split('.')[0],
               ),
               const Divider(
                 color: Colors.grey,
@@ -88,11 +141,10 @@ class TelaLog extends StatelessWidget {
     );
   }
 
-  // Item individual do log (somente informações, sem funcionalidade de botão)
   Widget _buildLogItem({
     required String title,
-    required String date, // Data mantida
-    required String time, // Horário adicionado
+    required String date,
+    required String time,
   }) {
     return ListTile(
       title: Text(
@@ -103,11 +155,11 @@ class TelaLog extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            date, // Exibição da data
+            date,
             style: const TextStyle(fontSize: 16, color: Colors.black54),
           ),
           Text(
-            time, // Exibição do horário
+            time,
             style: const TextStyle(fontSize: 16, color: Colors.black54),
           ),
         ],

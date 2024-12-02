@@ -12,7 +12,7 @@ class ApiService {
     _authToken = token;
   }
 
-  Future<Map<String, dynamic>> _handleRequest(String url, String method,
+  Future<dynamic> _handleRequest(String url, String method,
       {Map<String, String>? headers, dynamic body}) async {
     Uri uri = Uri.parse('$baseUrl$url');
     http.Response response;
@@ -52,38 +52,45 @@ class ApiService {
     }
   }
 
-  Map<String, dynamic> _processResponse(http.Response response) {
+  dynamic _processResponse(http.Response response) {
     final int statusCode = response.statusCode;
 
     if (statusCode >= 200 && statusCode < 300) {
-      return jsonDecode(response.body);
+      final decoded = jsonDecode(response.body);
+
+      // Retorna a resposta decodificada diretamente
+      if (decoded is List) {
+        return List<dynamic>.from(decoded);
+      } else if (decoded is Map) {
+        return Map<String, dynamic>.from(decoded);
+      } else {
+        throw Exception('Unsupported response type');
+      }
     } else {
       throw Exception('Failed with status code: $statusCode');
     }
   }
 
-  Future<Map<String, dynamic>> get(String url,
-      {Map<String, String>? headers}) async {
+  Future<dynamic> get(String url, {Map<String, String>? headers}) async {
     return _handleRequest(url, 'GET', headers: headers);
   }
 
-  Future<Map<String, dynamic>> post(String url, dynamic body,
+  Future<dynamic> post(String url, dynamic body,
       {Map<String, String>? headers}) async {
     return _handleRequest(url, 'POST', headers: headers, body: body);
   }
 
-  Future<Map<String, dynamic>> put(String url, dynamic body,
+  Future<dynamic> put(String url, dynamic body,
       {Map<String, String>? headers}) async {
     return _handleRequest(url, 'PUT', headers: headers, body: body);
   }
 
-  Future<Map<String, dynamic>> patch(String url, dynamic body,
+  Future<dynamic> patch(String url, dynamic body,
       {Map<String, String>? headers}) async {
     return _handleRequest(url, 'PATCH', headers: headers, body: body);
   }
 
-  Future<Map<String, dynamic>> delete(String url,
-      {Map<String, String>? headers}) async {
+  Future<dynamic> delete(String url, {Map<String, String>? headers}) async {
     return _handleRequest(url, 'DELETE', headers: headers);
   }
 }
