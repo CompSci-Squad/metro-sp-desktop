@@ -262,7 +262,7 @@ class _RegisterPassengerScreen extends State<RegisterPassengerScreen> {
           },
         ),
         const Text(
-          'Cadastro de Novo Passageiro',
+          'Cadastro de Novos Usuários',
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.left,
         ),

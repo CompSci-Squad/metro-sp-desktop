@@ -128,7 +128,7 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
           child: ListTile(
             contentPadding: EdgeInsets.zero,
             title: const Text(
-              'Verificar Cadastro do Passageiro',
+              'Verificar Cadastro Usuário',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ),
