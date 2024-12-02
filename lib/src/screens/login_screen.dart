@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/api_service.dart';
-import './globalVariables.dart';
+import '../shared/services/apiService.dart';
+import '../shared/global/globalVariables.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _LoginPageDesktopState createState() => _LoginPageDesktopState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginPageDesktopState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
   bool _obscurePassword = true;
 
@@ -32,12 +32,12 @@ class _LoginPageDesktopState extends State<LoginPage> {
 
     try {
       final postResponse = await apiService.post('/login', {
-        'email': email,
-        'password': password,
+        'email': email.trim(),
+        'password': password.trim(),
       });
 
       if (_isLoginSuccessful(postResponse)) {
-        await _handleSuccessfulLogin(postResponse["accessToken"], email);
+        await _handleSuccessfulLogin(postResponse["access_token"], email);
       } else {
         _showDialog('E-mail ou senha incorreto. Por favor, tente novamente.');
       }
@@ -53,7 +53,7 @@ class _LoginPageDesktopState extends State<LoginPage> {
   }
 
   bool _isLoginSuccessful(Map<String, dynamic> response) {
-    return response.containsKey("accessToken");
+    return response.containsKey("access_token");
   }
 
   Future<void> _handleSuccessfulLogin(String token, String email) async {
@@ -65,7 +65,7 @@ class _LoginPageDesktopState extends State<LoginPage> {
 
   void _showLoading(bool isLoading) {
     setState(() {
-      // Use this to show/hide a loading indicator
+      // Use this para exibir/ocultar um indicador de carregamento
     });
   }
 
@@ -112,82 +112,41 @@ class _LoginPageDesktopState extends State<LoginPage> {
     );
   }
 
-  void _showForgotPasswordDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Caso tenha esquecido a senha, favor entrar em contato com setor de T.I. por meio de ti@metro.com, com assunto "Esqueci minha senha". Informar também seu número de registro.',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                ),
-                child: const Text(
-                  'OK',
-                  style: TextStyle(color: Color.fromRGBO(0, 20, 137, 1)),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          _buildBarraSuperior(),
+          _buildBarraSuperior(), // A barra no topo
           Expanded(
             child: Center(
-              child: SingleChildScrollView(
-                child: Container(
-                  width: MediaQuery.of(context).size.width > 800 ? 600 : double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Acesse',
-                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      ),
-                      const Text(
-                        'com e-mail e senha para entrar',
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      ),
-                      const SizedBox(height: 20),
-                      _buildEmailField(),
-                      const SizedBox(height: 20),
-                      _buildPasswordField(),
-                      const SizedBox(height: 20),
-                      _buildCheckboxESenha(context),
-                      const SizedBox(height: 20),
-                      _submitButton(),
-                    ],
-                  ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 500, // Limita a largura máxima do conteúdo
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Acesse',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      'com e-mail e senha para entrar',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    const SizedBox(height: 20),
+                    _buildEmailField(),
+                    const SizedBox(height: 20),
+                    _buildPasswordField(),
+                    const SizedBox(height: 20),
+                    _buildCheckboxESenha(context),
+                    const SizedBox(height: 20),
+                    _submitButton(),
+                  ],
                 ),
               ),
             ),
@@ -200,12 +159,10 @@ class _LoginPageDesktopState extends State<LoginPage> {
   Widget _buildBarraSuperior() {
     return Container(
       width: double.infinity,
-      height: 80,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/barraMetro.png'),
-          fit: BoxFit.cover,
-        ),
+      height: 100,
+      child: Image.asset(
+        'assets/barraMetro.png',
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -287,7 +244,9 @@ class _LoginPageDesktopState extends State<LoginPage> {
           ],
         ),
         TextButton(
-          onPressed: _showForgotPasswordDialog,
+          onPressed: () {
+            // Implementar a lógica de "Esqueci minha senha"
+          },
           child: const Text(
             'Esqueci minha senha',
             style: TextStyle(color: Colors.red),
@@ -302,7 +261,9 @@ class _LoginPageDesktopState extends State<LoginPage> {
       child: SizedBox(
         width: 200,
         child: ElevatedButton(
-          onPressed: _submitLogin,
+          onPressed: () {
+            _submitLogin();
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color.fromRGBO(0, 20, 137, 1),
             padding: const EdgeInsets.symmetric(vertical: 20),

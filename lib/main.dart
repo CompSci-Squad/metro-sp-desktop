@@ -1,41 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:metro_sp_desktop/src/telas/telaLog.dart';
-import 'package:metro_sp_desktop/src/telas/telaVerificarCadastroEncontrado.dart';
-import 'package:provider/provider.dart';
-import 'src/telas/globalVariables.dart';
-import 'src/telas/telaCadastrarNovoUsuario.dart';
-import 'src/telas/telaPerfil.dart';
-
-import 'src/telas/telaVerificarCadastro.dart';
-
-import 'src/telas/telaLogin.dart';
-import 'src/telas/telaInicial.dart';
+import 'package:tela_login/src/screens/log_screen.dart';
+import 'src/shared/global/globalVariables.dart';
+import 'src/screens/register_passenger_screen.dart';
+import 'src/screens/profile_screen.dart';
+import 'src/screens/verify_passenger_screen.dart';
+import 'src/screens/passenger_info_screen.dart';
+import 'src/screens/login_screen.dart';
+import 'src/screens/inicial_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:provider/provider.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => GlobalVariables(),
-      child: MyApp(),
-    ));
+  runApp(ChangeNotifierProvider(
+    create: (_) => GlobalVariables(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       initialRoute: '/', // Define a tela de login como inicial
       routes: {
-        '/': (context) => LoginPage(),
-        '/telaInicial': (context) => TelaInicial(),
-        '/telaVerificarCadastro': (context) => TelaVerificarCadastro(),
-        '/telaPerfil': (context) => TelaPerfil(),
-        '/telaCadastrarNovoUsuario': (context) => TelaCadastrarNovoUsuario(),
-        '/telaLog': (context) => TelaLog(),
-        '/telaVerificarCadastroEncontrado': (context) => TelaVerificarCadastroEncontrado(),
-        // Adicione mais rotas aqui conforme criar novas telas
+        '/': (context) => LoginScreen(),
+        '/telaInicial': (context) => const InicialScreen(),
+        '/telaVerificarCadastro': (context) => VerifyPassengerScreen(),
+        '/telaPerfil': (context) => ProfileScreen(),
+        '/telaCadastrarNovoUsuario': (context) =>
+            const RegisterPassengerScreen(),
+        '/telaVerificarCadastroEncontrado': (context) =>
+            PassengerInfoScreen(),
+        '/telaLog': (context) => LogScreen()
       },
     );
   }

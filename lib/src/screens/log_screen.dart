@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../services/api_service.dart'; // Certifique-se de que o caminho esteja correto
-import './globalVariables.dart'; // Import da classe GlobalVariables
+import '../shared/services/apiService.dart';
+import '../shared/global/globalVariables.dart';
 
-class TelaLog extends StatefulWidget {
+class LogScreen extends StatefulWidget {
   @override
-  _TelaLogState createState() => _TelaLogState();
+  _LogScreenState createState() => _LogScreenState();
 }
 
-class _TelaLogState extends State<TelaLog> {
+class _LogScreenState extends State<LogScreen> {
   late Future<List<Map<String, dynamic>>> _logsFuture;
 
   Future<List<Map<String, dynamic>>> fetchLogs() async {
-  final response = await apiService.get('/logs');
-  
-  // Verifica se a resposta é uma lista de logs
-  if (response is List) {
-    return List<Map<String, dynamic>>.from(response);
+    final response = await apiService.get('/logs');
+
+    if (response is List) {
+      return List<Map<String, dynamic>>.from(response);
+    }
+
+    if (response is Map) {
+      return [Map<String, dynamic>.from(response)];
+    }
+
+    throw Exception('Formato inesperado na resposta do servidor');
   }
-
-  // Se for um único objeto, encapsula-o em uma lista
-  if (response is Map) {
-    return [Map<String, dynamic>.from(response)];
-  }
-
-  // Caso contrário, lança um erro
-  throw Exception('Formato inesperado na resposta do servidor');
-}
-
 
   @override
   void initState() {
@@ -45,27 +41,31 @@ class _TelaLogState extends State<TelaLog> {
           Expanded(
             child: Center(
               child: Container(
-                width: 600,
+                width: double.infinity, // Garante largura total
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildHeaderSection(context),
+                    _buildThickerDivider(),
                     FutureBuilder<List<Map<String, dynamic>>>(
                       future: _logsFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return const CircularProgressIndicator();
                         } else if (snapshot.hasError) {
                           return Center(
-                            child: Text('Erro ao carregar logs: ${snapshot.error}'),
+                            child: Text(
+                                'Erro ao carregar logs: ${snapshot.error}'),
                           );
                         } else if (snapshot.hasData) {
                           final logs = snapshot.data!;
-                          Provider.of<GlobalVariables>(context, listen: false).setLogs(logs);
+                          Provider.of<GlobalVariables>(context, listen: false)
+                              .setLogs(logs);
                           return _buildLogSection(logs);
                         } else {
-                          return const Center(child: Text('Nenhum log encontrado'));
+                          return const Center(
+                              child: Text('Nenhum log encontrado'));
                         }
                       },
                     ),
@@ -82,7 +82,7 @@ class _TelaLogState extends State<TelaLog> {
   Widget _buildTopBar() {
     return Container(
       width: double.infinity,
-      height: 80,
+      height: 100,
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/barraMetro.png'),
@@ -93,20 +93,26 @@ class _TelaLogState extends State<TelaLog> {
   }
 
   Widget _buildHeaderSection(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, size: 30, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        const SizedBox(width: 16),
-        const Text(
-          'Registros do Sistema',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ],
+    return Container(
+      width: double.infinity, // Preenche horizontalmente
+      color: Colors.white, // Cor de fundo para destacar o cabeçalho
+      child: Stack(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back, size: 30),
+            onPressed: () {
+              Navigator.pop(context); // Volta para a página anterior
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 50, top: 5),
+            child: const Text(
+              'Registros do Sistema',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
