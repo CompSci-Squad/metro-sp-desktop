@@ -67,7 +67,6 @@ class ApiService {
     if (statusCode >= 200 && statusCode < 300) {
       final decoded = jsonDecode(response.body);
 
-      // Retorna a resposta decodificada diretamente
       if (decoded is List) {
         return List<dynamic>.from(decoded);
       } else if (decoded is Map) {
@@ -118,29 +117,23 @@ class ApiService {
       headers['Authorization'] = 'Bearer $_authToken';
     }
 
-    // Check if the platform is Web or not
     if (kIsWeb) {
-      // Web-specific code using html.FormData
       try {
         final mimeType = lookupMimeType(file.name) ?? 'application/octet-stream';
         var completer = Completer<Map<String, dynamic>>();
         final formData = html.FormData();
 
-        // Add fields to FormData
         fields.forEach((key, value) {
           formData.append(key, value);
         });
 
-        // Read file as bytes asynchronously (for Web)
         final bytes = await file.readAsBytes();
         final blob = html.Blob([bytes], mimeType);
         formData.appendBlob('file', blob, 'image.jpg');
 
-        // Create the request
         final request = html.HttpRequest();
         request.open('POST', uri.toString());
 
-        // Set headers
         headers.forEach((key, value) {
           request.setRequestHeader(key, value);
           if (key.toLowerCase() != 'content-type') {
@@ -162,7 +155,6 @@ class ApiService {
           }
         });
 
-        // Send the request
         request.send(formData);
 
         return completer.future;
@@ -170,23 +162,18 @@ class ApiService {
         throw Exception('Failed to send multipart form data (Web): $e');
       }
     } else {
-      // Non-Web (Mobile/Desktop) code using http.MultipartRequest
       var request = http.MultipartRequest('POST', uri);
 
-      // Add fields to the request
       fields.forEach((key, value) {
         request.fields[key] = value;
       });
 
-      // Add the image file to the request
       request.files
           .add(await http.MultipartFile.fromPath(fileFieldName, file.path));
 
-      // Add headers
       request.headers.addAll(headers);
 
       try {
-        // Send the request and get the response
         var response = await request.send();
 
         if (response.statusCode >= 200 && response.statusCode < 300) {

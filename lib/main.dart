@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/', // Define a tela de login como inicial
+      initialRoute: '/',
       routes: {
         '/': (context) => LoginScreen(),
         '/telaInicial': (context) => const InicialScreen(),

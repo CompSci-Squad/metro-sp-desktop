@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart'; // Para abrir URLs
+import 'package:url_launcher/url_launcher.dart';
 
 import '../shared/global/globalVariables.dart';
 
@@ -14,7 +14,6 @@ class InicialScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Barra superior com a imagem
           Container(
             width: double.infinity,
             height: 100,
@@ -84,10 +83,9 @@ class InicialScreen extends StatelessWidget {
   Widget _buildHorizontalContent(BuildContext context) {
     return Expanded(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center, // Centraliza horizontalmente
-        crossAxisAlignment: CrossAxisAlignment.center, // Alinha verticalmente
+        mainAxisAlignment: MainAxisAlignment.center, 
+        crossAxisAlignment: CrossAxisAlignment.center, 
         children: [
-          // Mapa com título acima
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -96,7 +94,7 @@ class InicialScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20), // Espaço entre texto e mapa
+              const SizedBox(height: 20), 
               GestureDetector(
                 onTap: () async {
                   final url = Uri.parse(
@@ -108,8 +106,8 @@ class InicialScreen extends StatelessWidget {
                   }
                 },
                 child: Container(
-                  width: 500, // Largura do mapa
-                  height: 500, // Altura do mapa
+                  width: 500, 
+                  height: 500, 
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/linhasMetro.png'),
@@ -120,8 +118,7 @@ class InicialScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 30), // Espaçamento entre mapa e botões
-          // Botões com título acima
+          const SizedBox(width: 30), 
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -130,15 +127,15 @@ class InicialScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20), // Espaço entre texto e botão
+              const SizedBox(height: 20), 
               buildStyledButton('Cadastrar Novo Usuário', () {
                 Navigator.pushNamed(context, '/telaCadastrarNovoUsuario');
               }),
-              const SizedBox(height: 20), // Espaço entre os botões
+              const SizedBox(height: 20),
               buildStyledButton('Verificar Cadastro Usuário', () {
                 Navigator.pushNamed(context, '/telaVerificarCadastro');
               }),
-              const SizedBox(height: 20), // Espaço entre os botões
+              const SizedBox(height: 20), 
               buildStyledButton('Registros do Sistema', () {
                 Navigator.pushNamed(context, '/telaLog');
               }),

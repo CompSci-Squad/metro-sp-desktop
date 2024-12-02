@@ -34,7 +34,6 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Barra superior com a imagem
                 Container(
                   width: double.infinity,
                   height: 100,
@@ -45,12 +44,10 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
                 ),
                 SizedBox(height: 10),
 
-                // Cabeçalho
                 _buildGreetingSection(context),
                 _buildThickerDivider(),
                 SizedBox(height: 20),
 
-                // Conteúdo centralizado com largura limitada
                 Center(
                   child: ConstrainedBox(
                     constraints:
@@ -160,7 +157,7 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
 
   Widget _buildProfileImage(String? imageUrl) {
     return CircleAvatar(
-      radius: 80, // Aumenta o tamanho da imagem do perfil
+      radius: 80, 
       backgroundColor: Colors.grey[300],
       backgroundImage: imageUrl != null && imageUrl.isNotEmpty
           ? NetworkImage(imageUrl)
@@ -168,7 +165,7 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
       child: imageUrl == null || imageUrl.isEmpty
           ? Icon(
               Icons.person,
-              size: 70, // Ícone maior
+              size: 70, 
               color: Colors.black54,
             )
           : null,
@@ -202,21 +199,21 @@ class _PassengerInfoScreenState extends State<PassengerInfoScreen> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 14), // Texto maior
+          style: TextStyle(fontSize: 14),
         ),
         SizedBox(
-          height: 50, // Aumenta a altura da caixa
+          height: 50, 
           child: Container(
             decoration: BoxDecoration(
               color: Color.fromRGBO(0, 20, 137, 1),
-              borderRadius: BorderRadius.circular(8), // Bordas arredondadas maiores
+              borderRadius: BorderRadius.circular(8), 
               border: Border.all(color: Colors.grey, width: 1),
             ),
-            padding: EdgeInsets.symmetric(horizontal: 12.0), // Margem interna maior
+            padding: EdgeInsets.symmetric(horizontal: 12.0), 
             alignment: Alignment.centerLeft,
             child: Text(
               value,
-              style: TextStyle(color: Colors.white, fontSize: 16), // Texto maior
+              style: TextStyle(color: Colors.white, fontSize: 16), 
             ),
           ),
         ),

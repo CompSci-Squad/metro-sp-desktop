@@ -258,7 +258,7 @@ class _RegisterPassengerScreen extends State<RegisterPassengerScreen> {
         IconButton(
           icon: const Icon(Icons.arrow_back, size: 30,),
           onPressed: () {
-            Navigator.pop(context); // Volta para a página anterior
+            Navigator.pop(context); 
           },
         ),
         const Text(

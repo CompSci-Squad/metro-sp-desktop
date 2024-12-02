@@ -103,7 +103,7 @@ class _VerifyPassengerScreenState extends State<VerifyPassengerScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
+                  Navigator.of(context).pop(); 
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -171,7 +171,7 @@ class _VerifyPassengerScreenState extends State<VerifyPassengerScreen> {
         IconButton(
           icon: const Icon(Icons.arrow_back, size: 30),
           onPressed: () {
-            Navigator.pop(context); // Volta para a página anterior
+            Navigator.pop(context); 
           },
         ),
         Padding(
@@ -197,7 +197,7 @@ class _VerifyPassengerScreenState extends State<VerifyPassengerScreen> {
 
   Widget _buildOperationButtons(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 350), // Define a largura máxima
+      constraints: BoxConstraints(maxWidth: 350),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

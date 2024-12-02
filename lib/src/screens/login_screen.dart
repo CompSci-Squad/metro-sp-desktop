@@ -65,7 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _showLoading(bool isLoading) {
     setState(() {
-      // Use this para exibir/ocultar um indicador de carregamento
     });
   }
 
@@ -90,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
+                  Navigator.of(context).pop(); 
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -118,12 +117,12 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          _buildBarraSuperior(), // A barra no topo
+          _buildBarraSuperior(), 
           Expanded(
             child: Center(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: 500, // Limita a largura máxima do conteúdo
+                  maxWidth: 500, 
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

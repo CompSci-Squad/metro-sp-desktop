@@ -41,7 +41,7 @@ class _LogScreenState extends State<LogScreen> {
           Expanded(
             child: Center(
               child: Container(
-                width: double.infinity, // Garante largura total
+                width: double.infinity, 
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
@@ -94,14 +94,14 @@ class _LogScreenState extends State<LogScreen> {
 
   Widget _buildHeaderSection(BuildContext context) {
     return Container(
-      width: double.infinity, // Preenche horizontalmente
-      color: Colors.white, // Cor de fundo para destacar o cabeçalho
+      width: double.infinity, 
+      color: Colors.white, 
       child: Stack(
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back, size: 30),
             onPressed: () {
-              Navigator.pop(context); // Volta para a página anterior
+              Navigator.pop(context); 
             },
           ),
           Padding(

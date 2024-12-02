@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    _buildHeader(context), // Header com a barraMetro e seta
+                    _buildHeader(context), 
                     Expanded(
                       child: Center(
                         child: Column(
@@ -110,11 +110,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileImage() {
     return CircleAvatar(
-      radius: 80, // Aumentado para 80
+      radius: 80, 
       backgroundColor: Colors.grey[300],
       child: const Icon(
         Icons.person,
-        size: 100, // Ajustado para acompanhar o círculo
+        size: 100, 
         color: Colors.black54,
       ),
     );
@@ -122,22 +122,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildProfileItem(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0), // Espaçamento aumentado
+      padding: const EdgeInsets.symmetric(vertical: 12.0), 
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             title,
             style: const TextStyle(
-              fontSize: 18, // Aumentado o tamanho do título
+              fontSize: 18, 
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 6), // Espaçamento entre título e valor
+          const SizedBox(height: 6), 
           Text(
             value,
             style: const TextStyle(
-              fontSize: 18, // Aumentado o tamanho do valor
+              fontSize: 18, 
               color: Colors.black54,
             ),
           ),
