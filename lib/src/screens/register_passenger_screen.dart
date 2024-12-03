@@ -251,26 +251,28 @@ class _RegisterPassengerScreen extends State<RegisterPassengerScreen> {
   }
 
   Widget _buildGreetingSection() {
-  return ListTile(
-    contentPadding: EdgeInsets.zero,
-    title: Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.arrow_back, size: 30,),
-          onPressed: () {
-            Navigator.pop(context); 
-          },
-        ),
-        const Text(
-          'Cadastro de Novos Usuários',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.left,
-        ),
-      ],
-    ),
-  );
-}
-
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      title: Row(
+        children: [
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 30,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          const Text(
+            'Cadastro de Novos Usuários',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.left,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildThickerDivider() {
     return const Divider(
@@ -442,19 +444,23 @@ class _RegisterPassengerScreen extends State<RegisterPassengerScreen> {
           children: [
             IconButton(
               onPressed: () async {
-                final XFile? image = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CameraFullScreenPage(
-                      cameraController: cameraController,
-                      onImageCaptured: handleImageCaptured,
+                if (cameraController.value.isInitialized) {
+                  final XFile? image = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CameraFullScreenPage(
+                        cameraController: cameraController,
+                        onImageCaptured: handleImageCaptured,
+                      ),
                     ),
-                  ),
-                );
-                if (image != null) {
-                  setState(() {
-                    capturedImage = image;
-                  });
+                  );
+                  if (image != null) {
+                    setState(() {
+                      capturedImage = image;
+                    });
+                  }
+                } else {
+                  _showErrorDialog(message: 'Câmera não foi inicializada.');
                 }
               },
               icon: const Icon(Icons.camera_alt, size: 40, color: Colors.black),
@@ -498,6 +504,32 @@ class _RegisterPassengerScreen extends State<RegisterPassengerScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeCamera();
+  }
+
+  Future<void> _initializeCamera() async {
+    try {
+      cameras = await availableCameras();
+      cameraController = CameraController(
+        cameras.first, // Escolha a primeira câmera disponível
+        ResolutionPreset.high,
+      );
+      await cameraController.initialize();
+      setState(() {}); // Atualize o estado para renderizar o preview da câmera
+    } catch (e) {
+      print('Erro ao inicializar a câmera: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    cameraController.dispose(); // Libere o controlador da câmera
+    super.dispose();
   }
 }
 
