@@ -41,3 +41,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+#arb-dir: lib/src/localization
+#template-arb-file: app_en.arb
+#output-localization-file: app_localizations.dart
+
+.env
